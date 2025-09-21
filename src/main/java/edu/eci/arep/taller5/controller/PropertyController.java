@@ -5,6 +5,8 @@ import edu.eci.arep.taller5.model.Property;
 import edu.eci.arep.taller5.service.PropertyService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +23,14 @@ public class PropertyController {
     public PropertyController(PropertyService propertyService) {
         this.propertyService = propertyService;
     }
+//    @GetMapping
+//    public ResponseEntity<List<Property>> getAllProperties() {
+//        return ResponseEntity.ok(propertyService.getAll());
+//    }
+    //PAGINATION IMPLEMENTATION
     @GetMapping
-    public ResponseEntity<List<Property>> getAllProperties() {
-        return ResponseEntity.ok(propertyService.getAll());
+    public ResponseEntity<Page<Property>> getPaginatedProperties(Pageable pageable) {
+        return ResponseEntity.ok(propertyService.getPaginatedProperties(pageable));
     }
     @GetMapping("{id}")
     public ResponseEntity<Property> getPropertyById(@PathVariable Long id) {
@@ -43,4 +50,5 @@ public class PropertyController {
         propertyService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
 }
