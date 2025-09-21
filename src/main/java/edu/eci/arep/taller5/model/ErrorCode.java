@@ -1,5 +1,8 @@
 package edu.eci.arep.taller5.model;
 
+/**
+ * Error code model
+ */
 public enum ErrorCode {
     NOT_FOUND(404),
     BAD_REQUEST(400),

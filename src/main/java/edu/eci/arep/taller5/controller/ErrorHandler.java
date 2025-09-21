@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Middleware to send the HTTP code errors
+ */
 @RestControllerAdvice
 public class ErrorHandler {
-
+    /**
+     * Capture the exception of type AppException
+     */
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ProblemDetail> handle(AppException ex){
         var pd = ProblemDetail.forStatus(ex.getHttpStatus());
@@ -23,6 +27,9 @@ public class ErrorHandler {
         pd.setProperty("code", ex.getErrorCode().name());
         return ResponseEntity.status(ex.getHttpStatus()).body(pd);
     }
+    /**
+     * Capture the exception of type MethodArgumentNotValid
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handle(MethodArgumentNotValidException ex){
         var pd = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
@@ -39,6 +46,9 @@ public class ErrorHandler {
         pd.setProperty("code", "BAD_REQUEST");
         return ResponseEntity.badRequest().body(pd);
     }
+    /**
+     * Capture other exception
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleUnknown(Exception ex) {
         ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);

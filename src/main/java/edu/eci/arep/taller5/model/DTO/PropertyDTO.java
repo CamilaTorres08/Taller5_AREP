@@ -4,6 +4,9 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Property model to receive data
+ */
 public class PropertyDTO {
     Long id;
     @NotBlank(message="Address is required")

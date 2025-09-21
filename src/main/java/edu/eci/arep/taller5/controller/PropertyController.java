@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static edu.eci.arep.taller5.mapper.PropertyMapper.toProperty;
 
 @RestController
@@ -27,8 +25,10 @@ public class PropertyController {
 //    public ResponseEntity<List<Property>> getAllProperties() {
 //        return ResponseEntity.ok(propertyService.getAll());
 //    }
-    //PAGINATION IMPLEMENTATION
-    //SEARCH IMPLEMENTATION
+    /**
+    * Get Properties with filters by location, price and size
+     * make pagination sending current page and size
+     */
     @GetMapping
     public ResponseEntity<Page<Property>> getPaginatedProperties(@RequestParam(required = false) String location,
                                                                  @RequestParam(required = false) Double price,
@@ -36,19 +36,43 @@ public class PropertyController {
                                                                  Pageable pageable) {
         return ResponseEntity.ok(propertyService.getPaginatedProperties(location, price, sizeProperty, pageable));
     }
+
+    /**
+     * Get Property by id
+     * @param id Property ID
+     * @return Property
+     */
     @GetMapping("{id}")
     public ResponseEntity<Property> getPropertyById(@PathVariable Long id) {
         return ResponseEntity.ok(propertyService.getById(id));
     }
+
+    /**
+     * Save new property
+     * @param property DTO Object with the values of the new property
+     * @return The new property
+     */
     @PostMapping
     public ResponseEntity<Property> createProperty(@Valid @RequestBody PropertyDTO property) {
 
         return ResponseEntity.ok(propertyService.save(toProperty(property)));
     }
+
+    /**
+     * Updates an existing property
+     * @param id the property to update
+     * @param property the values of the property
+     * @return The updated property
+     */
     @PutMapping("{id}")
     public ResponseEntity<Property> updateProperty(@PathVariable Long id, @Valid @RequestBody PropertyDTO property) {
         return ResponseEntity.ok(propertyService.update(id, toProperty(property)));
     }
+
+    /**
+     * Delete an existing property
+     * @param id The property ID to delete
+     */
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteProperty(@PathVariable Long id) {
         propertyService.delete(id);

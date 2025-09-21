@@ -1,13 +1,11 @@
 package edu.eci.arep.taller5;
 
-import edu.eci.arep.taller5.controller.PropertyController;
 import edu.eci.arep.taller5.exception.BadRequestException;
 import edu.eci.arep.taller5.exception.NotFoundException;
 import edu.eci.arep.taller5.model.DTO.PropertyDTO;
 import edu.eci.arep.taller5.model.Property;
 import edu.eci.arep.taller5.repository.PropertyRepository;
 import edu.eci.arep.taller5.service.Imp.PropertyServiceImp;
-import edu.eci.arep.taller5.service.PropertyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
@@ -38,14 +34,10 @@ class Taller5ApplicationTests {
 	@Mock
 	private PropertyRepository propertyRepository;
 
-	@Mock
-	private PropertyService propertyService;
 
 	@InjectMocks
 	private PropertyServiceImp propertyServiceImp;
 
-	@InjectMocks
-	private PropertyController propertyController;
 
 	private Property testProperty;
 	private PropertyDTO testPropertyDTO;

@@ -3,6 +3,9 @@ package edu.eci.arep.taller5.mapper;
 import edu.eci.arep.taller5.model.DTO.PropertyDTO;
 import edu.eci.arep.taller5.model.Property;
 
+/**
+ * Converts PropertyDto to Property
+ */
 public class PropertyMapper {
     public static Property toProperty(PropertyDTO dto){
         if(dto.getId() != null){
