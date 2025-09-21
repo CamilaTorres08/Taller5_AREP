@@ -53,7 +53,7 @@ public class PropertyServiceImp implements PropertyService {
         }
         propertyRepository.deleteById(id);
     }
-    public Page<Property> getPaginatedProperties(Pageable pageable){
-        return propertyRepository.findAll(pageable);
+    public Page<Property> getPaginatedProperties(String location, Double price, Double sizeProperty,Pageable pageable){
+        return propertyRepository.findAllByFilter(location,price,sizeProperty,pageable);
     }
 }

@@ -28,9 +28,13 @@ public class PropertyController {
 //        return ResponseEntity.ok(propertyService.getAll());
 //    }
     //PAGINATION IMPLEMENTATION
+    //SEARCH IMPLEMENTATION
     @GetMapping
-    public ResponseEntity<Page<Property>> getPaginatedProperties(Pageable pageable) {
-        return ResponseEntity.ok(propertyService.getPaginatedProperties(pageable));
+    public ResponseEntity<Page<Property>> getPaginatedProperties(@RequestParam(required = false) String location,
+                                                                 @RequestParam(required = false) Double price,
+                                                                 @RequestParam(required = false) Double sizeProperty,
+                                                                 Pageable pageable) {
+        return ResponseEntity.ok(propertyService.getPaginatedProperties(location, price, sizeProperty, pageable));
     }
     @GetMapping("{id}")
     public ResponseEntity<Property> getPropertyById(@PathVariable Long id) {

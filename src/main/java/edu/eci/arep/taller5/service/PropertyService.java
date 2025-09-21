@@ -14,5 +14,5 @@ public interface PropertyService {
     Property save(Property property);
     Property update(Long id, Property property);
     void delete(Long id);
-    Page<Property> getPaginatedProperties(Pageable pageable);
+    Page<Property> getPaginatedProperties(String location, Double price, Double sizeProperty,Pageable pageable);
 }
