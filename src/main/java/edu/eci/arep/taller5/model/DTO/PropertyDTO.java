@@ -35,4 +35,23 @@ public class PropertyDTO {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public void setSize(Double size) {
+        this.size = size;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
