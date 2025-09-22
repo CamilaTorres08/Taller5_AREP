@@ -1,6 +1,6 @@
 # Taller de trabajo individual en patrones arquitecturales
 
-### Introducción
+## Introducción
 Este proyecto es una aplicación REST de gestión de propiedades construida con Spring Boot. Ofrece operaciones CRUD (crear, leer, actualizar y eliminar) y soporta filtrado y paginación por dirección, precio mínimo y tamaño mínimo. Un frontend mínimo se sirve como recursos estáticos para interactuar con el backend, mientras que la persistencia se realiza en una base de datos MySQL.
 
 Características clave:
@@ -247,9 +247,9 @@ http://<alb-dns-or-service-public-ip>:8080
 
 [Ver video despliegue en AWS](https://pruebacorreoescuelaingeduco-my.sharepoint.com/:v:/g/personal/andrea_torres-g_mail_escuelaing_edu_co/EU1nUXpq8bxGkHLm6CUVpwgB_5HzfPYJvobcyMfPiY51LA?e=Lr3agh&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D)
 
-### Pruebas
+## Pruebas
 
-#### Pruebas manuales
+### Pruebas manuales
 
 1. Pruebas en la interfáz
 
@@ -259,7 +259,7 @@ https://github.com/user-attachments/assets/de9815f1-6807-41a1-bc9b-b41d1ad23973
 
 https://github.com/user-attachments/assets/43e4c755-b253-407d-889d-773a147fa33b
 
-#### Prueba automáticas
+### Prueba automáticas
 Se incluye pruebas con JUnit y Mockito para validar el funcionamiento del framework.
 Las pruebas de unidad y de contexto están en `src/test/java/...`.
 
@@ -267,7 +267,7 @@ Ejecutar todas las pruebas:
 ```bash
 mvn test
 ```
-#### Verificación
+### Verificación
 
 Este proyecto incluye un conjunto completo de pruebas unitarias que garantizan el correcto funcionamiento de todas las operaciones CRUD del sistema de propiedades.
 
