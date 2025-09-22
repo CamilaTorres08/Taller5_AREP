@@ -1,4 +1,4 @@
-## Taller de de modularización con virtualización e Introducción a Docker
+## Taller de trabajo individual en patrones arquitecturales
 
 ### Introducción
 Este proyecto es una aplicación REST de gestión de propiedades construida con Spring Boot. Ofrece operaciones CRUD (crear, leer, actualizar y eliminar) y soporta filtrado y paginación por dirección, precio mínimo y tamaño mínimo. Un frontend mínimo se sirve como recursos estáticos para interactuar con el backend, mientras que la persistencia se realiza en una base de datos MySQL.
@@ -131,10 +131,10 @@ El `Dockerfile` (base Java 21) construye una imagen de ejecución para el JAR de
 
 Construcción y ejecución local:
 ```bash
-# Build jar
+# Construir jar
 mvn clean install
 
-# Build image
+# Construir image
 docker build -t taller5-arep .
 
 # Ejecutar contenedor (conectando a MySQL local)
@@ -252,6 +252,8 @@ http://<alb-dns-or-service-public-ip>:8080
 #### Pruebas manuales
 
 1. Pruebas en la interfáz
+
+
 
 2. Pruebas con Postman
 
