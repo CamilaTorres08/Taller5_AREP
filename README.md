@@ -281,7 +281,7 @@ Este proyecto incluye un conjunto completo de pruebas unitarias que garantizan e
   - Validaciones de entrada
   - Consistencia de datos
 
-<img src="readmeImages/img_4.png">
+<img src="images/img.png">
 
 ## Tecnologías utilizadas
 
@@ -292,10 +292,6 @@ Este proyecto incluye un conjunto completo de pruebas unitarias que garantizan e
 * [MySQL](https://www.mysql.com/) - Moto de base de datos 
 * [Docker](https://www.docker.com/) - Plataforma de contenedores para empaquetado y despliegue 
 * [AWS](https://aws.amazon.com/) - Plataforma cloud 
-
-## Versionamiento
-
-Actualmente se encuentra en desarrollo y se usa la versión por defecto.
 
 ## Autores
 
