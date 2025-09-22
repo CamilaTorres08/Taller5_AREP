@@ -1,4 +1,4 @@
-## Taller de trabajo individual en patrones arquitecturales
+# Taller de trabajo individual en patrones arquitecturales
 
 ### Introducción
 Este proyecto es una aplicación REST de gestión de propiedades construida con Spring Boot. Ofrece operaciones CRUD (crear, leer, actualizar y eliminar) y soporta filtrado y paginación por dirección, precio mínimo y tamaño mínimo. Un frontend mínimo se sirve como recursos estáticos para interactuar con el backend, mientras que la persistencia se realiza en una base de datos MySQL.
@@ -11,7 +11,7 @@ Características clave:
 
 Finalmente, se desplegará la aplicación y la base de datos en instancias EC2 y usando Docker.
 
-### Arquitectura del Sistema
+## Arquitectura del Sistema
 El sistema sigue una arquitectura clásica de tres capas: un frontend estático, un backend en Spring Boot y una base de datos MySQL. El frontend realiza peticiones HTTP al backend, el cual persiste datos en MySQL vía JPA.
 
 <img src=images/despliegue.png>
@@ -77,7 +77,7 @@ curl -s -X PUT "http://localhost:8080/properties/1" \
 # Eliminar
 curl -s -X DELETE "http://localhost:8080/properties/1" -i
 ```
-
+## Implementación
 ### Desarrollo Local
 Prerequisitos: Java 21, Maven 3.9+, MySQL 8 (o una instancia MySQL alojada).
 
@@ -192,7 +192,7 @@ docker push camilatorres0812/taller5:latest
 - Configurar reglas de entrada para que permita escuchar por el puerto `8080`
 - Crear otra instancia EC2 para la base de datos
 - Configurar la misma VPC y Subred de la instancia de la EC2 de la aplicación
-- Crear reglas de entradas para que escuche la red privada de la EC2 de la aplicación por el puerto `3306`
+- Crear reglas de entradas para permitir la IP privada de la EC2 de la aplicación por el puerto `3306`
 
 3) Crear contenedores docker en las instancias
 - Instalar docker
