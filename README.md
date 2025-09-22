@@ -253,9 +253,11 @@ http://<alb-dns-or-service-public-ip>:8080
 
 1. Pruebas en la interfáz
 
-
+https://github.com/user-attachments/assets/de9815f1-6807-41a1-bc9b-b41d1ad23973
 
 2. Pruebas con Postman
+
+https://github.com/user-attachments/assets/43e4c755-b253-407d-889d-773a147fa33b
 
 #### Prueba automáticas
 Se incluye pruebas con JUnit y Mockito para validar el funcionamiento del framework.
