@@ -1,15 +1,13 @@
 ## Taller5_AREP – Sistema de Gestión de Propiedades
 
-### Resumen del Proyecto
-Este proyecto es una aplicación REST de gestión de propiedades construida con Spring Boot. Ofrece operaciones CRUD (crear, leer, actualizar y eliminar) y soporta filtrado y paginación por dirección/ubicación, precio mínimo y tamaño mínimo. Un frontend mínimo se sirve como recursos estáticos para interactuar con el backend, mientras que la persistencia se realiza en una base de datos MySQL.
+### Introducción
+Este proyecto es una aplicación REST de gestión de propiedades construida con Spring Boot. Ofrece operaciones CRUD (crear, leer, actualizar y eliminar) y soporta filtrado y paginación por dirección, precio mínimo y tamaño mínimo. Un frontend mínimo se sirve como recursos estáticos para interactuar con el backend, mientras que la persistencia se realiza en una base de datos MySQL.
 
 Características clave:
 - Crear, actualizar, eliminar y consultar propiedades
-- Paginación y filtros opcionales: ubicación (dirección contiene), precio (>=), tamaño (>=)
+- Paginación y filtros opcionales: dirección, precio y tamaño 
 - Validación de DTO con manejo de errores claro
 - Servicio contenedorizado listo para despliegue en la nube
-
-Tecnologías principales: Spring Boot, Spring Data JPA, Hibernate, MySQL, Docker, Java 21.
 
 ### Arquitectura del Sistema
 El sistema sigue una arquitectura clásica de tres capas: un frontend estático, un backend en Spring Boot y una base de datos MySQL. El frontend realiza peticiones HTTP al backend, el cual persiste datos en MySQL vía JPA.
@@ -17,8 +15,9 @@ El sistema sigue una arquitectura clásica de tres capas: un frontend estático,
 <img src=images/despliegue.png>
 
 - Puerto del backend: `8080` (ver `application.properties` y `Dockerfile`).
-- Base de datos: MySQL 8 (driver `com.mysql.cj.jdbc.Driver`, dialecto `MySQL8Dialect`).
-- Conexión a BD vía variables de entorno: `SPRING_DATASOURCE_URL`, `MYSQL_USER`, `MYSQL_PASSWORD`.
+- Base de datos: `3306` MySQL 8.
+- Conexión a BD vía variables de entorno: `SPRING_DATASOURCE_URL`, `MYSQL_USER`, `MYSQL_PASSWORD` ó con
+H2 para pruebas locales.
 
 Formato de ejemplo para `SPRING_DATASOURCE_URL`:
 - Local/MySQL: `jdbc:mysql://<host>:3306/<database>?useSSL=false&serverTimezone=UTC`
@@ -35,11 +34,16 @@ Archivos relevantes:
 - `src/main/java/edu/eci/arep/taller5/service/PropertyService.java` y `.../Imp/PropertyServiceImp.java`: Lógica de negocio.
 - `src/main/java/edu/eci/arep/taller5/controller/PropertyController.java`: Endpoints REST.
 
+Adicionalmente, se implementó un middleware que gestiona las excepciones y construye la respuesta HTTP con el
+código de error correspondiente.
+
+<img src="images/clases2.png">
+
 ### Resumen de la API REST
 Ruta base: `/properties`
 
 - GET `/properties`
-  - Parámetros de consulta (opcionales): `location`, `price`, `sizeProperty`, y los de Spring `page`, `size`, `sort`
+  - Parámetros de consulta (opcionales): `location`, `price`, `sizeProperty`, y los de Spring `page`, `size`
   - Retorna `Page<Property>`
 
 - GET `/properties/{id}` → `Property`
@@ -75,16 +79,42 @@ curl -s -X DELETE "http://localhost:8080/properties/1" -i
 ### Desarrollo Local
 Prerequisitos: Java 21, Maven 3.9+, MySQL 8 (o una instancia MySQL alojada).
 
-1) Configura variables de entorno (ejemplo):
-```bash
-set SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/properties?useSSL=false&serverTimezone=UTC
-set MYSQL_USER=root
-set MYSQL_PASSWORD=secret
-```
+1) Conexión a la base de datos
+   - Configura variables de entorno (ejemplo):
+    ```bash
+    set SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/properties?useSSL=false&serverTimezone=UTC
+    set MYSQL_USER=root
+    set MYSQL_PASSWORD=secret
+    ```
+    luego en el `application.properties`
+    ```properties
+    spring.datasource.url=${SPRING_DATASOURCE_URL}
+    spring.datasource.username=${MYSQL_USER}
+    spring.datasource.password=${MYSQL_PASSWORD}
+    spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+    server.port=8080
+    spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+    spring.jpa.open-in-view=false
+    ```
+   - Ó usa H2 colocando lo siguiente en el `application.properties`
+
+    ```bash
+    spring.datasource.url=jdbc:h2:mem:arep;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    spring.datasource.driverClassName=org.h2.Driver
+    spring.datasource.username=sa
+    spring.datasource.password=password
+    spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+    spring.jpa.defer-datasource-initialization=true
+    spring.h2.console.enabled=true
+    spring.h2.console.path=/h2-console
+    spring.h2.console.settings.web-allow-others=false
+    ```
+   Luego abre `http://localhost:8080/h2-console` e inicia sesión con las credenciales.
 
 2) Construye el JAR:
 ```bash
-./mvnw clean package -DskipTests
+mvn clean install
 ```
 
 3) Ejecuta localmente:
@@ -100,10 +130,10 @@ El `Dockerfile` (base Java 21) construye una imagen de ejecución para el JAR de
 Construcción y ejecución local:
 ```bash
 # Build jar
-./mvnw clean package -DskipTests
+mvn clean install
 
 # Build image
-docker build -t taller5-arep:latest .
+docker build -t taller5-arep .
 
 # Ejecutar contenedor (conectando a MySQL local)
 docker run --rm -p 8080:8080 \
@@ -136,104 +166,142 @@ services:
       - "8080:8080"
 ```
 
-### Despliegue en AWS (ECR + ECS Fargate)
-Configuración típica y económica usando MySQL administrado (Amazon RDS) y un backend contenedorizado en Fargate.
+### Despliegue en AWS 
+Este trabajo despliega la aplicación Spring Boot anteriormente implementada y una base de datos MySQL en dos instancias **EC2** separadas dentro del mismo **VPC**. La comunicación entre servicios ocurre por IP privada y se protege con **Security Groups**.
 
 Prerequisitos:
 - Cuenta de AWS, AWS CLI configurada
-- Repositorio ECR creado (por ejemplo, `taller5-arep`)
-- Instancia RDS MySQL con base de datos/esquema creado
+- Docker Hub
+- Instancias EC2 
 
 Pasos:
-1) Construir y subir la imagen a ECR
+1) Construir y subir la imagen a un repositorio en Docker Hub
 ```bash
-ACCOUNT_ID=<your_aws_account_id>
-REGION=<your_region>
-REPO=taller5-arep
-
-aws ecr get-login-password --region $REGION | \
-  docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com
-
-docker build -t $REPO:latest .
-docker tag $REPO:latest $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$REPO:latest
-docker push $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$REPO:latest
+#Construir imagen docker 
+docker build -t tallercincoarep . 
+#Enlazar el repositorio en Docker HUB a la imágen
+docker tag tallercincoarep camilatorres0812/taller5
+#Subir la imagen al repositorio
+docker push camilatorres0812/taller5:latest
 ```
 
 2) Aprovisionar infraestructura
-- Crear una instancia RDS MySQL y anotar: host, puerto, base, usuario, contraseña.
-- Crear una VPC con subredes y grupos de seguridad que permitan al servicio ECS acceder a RDS por el puerto 3306.
-- Crear un clúster ECS y un servicio Fargate.
+- Crear una instancia EC2 para la aplicación.
+- Configurar reglas de entrada para que permita escuchar por el puerto `8080`
+- Crear otra instancia EC2 para la base de datos
+- Configurar la misma VPC y Subred de la instancia de la EC2 de la aplicación
+- Crear reglas de entradas para que escuche la red privada de la EC2 de la aplicación por el puerto `3306`
 
-3) Definir Task Definition (Fargate)
-- Imagen de contenedor: `ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/taller5-arep:latest`
-- Mapeo de puertos: contenedor `8080`
-- Variables de entorno:
-  - `SPRING_DATASOURCE_URL=jdbc:mysql://<rds-endpoint>:3306/<db>?useSSL=false&serverTimezone=UTC`
-  - `MYSQL_USER=<db_user>`
-  - `MYSQL_PASSWORD=<db_password>`
-- Asignar el servicio a subredes con salida a internet/NAT si se necesita.
+3) Crear contenedores docker en las instancias
+- Instalar docker
 
-4) Crear un Load Balancer (opcional pero recomendado)
-- Application Load Balancer → target group en puerto 8080 → servicio ECS como destino.
-- Exponer el DNS del ALB como endpoint público.
+```bash
+#Descargar docker
+sudo yum install docker
+#Iniciar servidor Docker
+sudo service docker start
+#Dar permisos
+sudo usermod -a -G docker ec2-user
+```
+- Crear contenedor docker en la instancia EC2 de la Base de Datos
+```bash
+#Crear volumen 
+docker volume create mysql_data
+#Crear el contenedor MYSQL
+docker run -d \
+  --name mysql \
+  --restart unless-stopped \
+  -p 3306:3306 \
+  -v mysql_data:/var/lib/mysql \
+  -e MYSQL_ROOT_PASSWORD="<CLASE_DEL_ROOT>" \
+  -e MYSQL_DATABASE="<NOMBRE_BD>" \
+  -e MYSQL_USER="<NOMBRE_USUARIO>" \
+  -e MYSQL_PASSWORD="<CONTRASEÑA_USUARIO>" \
+  mysql:8
+```
+
+- Crear contenedor docker en la instancia EC2 de la aplicación
+
+```bash
+#Crear el contenedor Docker con el repositorio de Docker hub
+docker run -d \
+  --name taller5 \
+  --restart unless-stopped \
+  -p 8080:8080 \
+  -e SPRING_DATASOURCE_URL="jdbc:mysql://<IP_PRIVADA_DB>:3306/taller5?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" \
+  -e SPRING_DATASOURCE_USERNAME="<NOMBRE_USUARIO>" \
+  -e SPRING_DATASOURCE_PASSWORD="<CONTRASEÑA_USUARIO>" \
+  camilatorres0812/taller5:latest
+```
+Se debe colocar la IP privada, usuario y contraseña creados en la EC2 de la base de datos. 
 
 5) Verificar el despliegue
+
 ```bash
-curl http://<alb-dns-or-service-public-ip>:8080/properties
+http://<alb-dns-or-service-public-ip>:8080
 ```
 
-Alternativa: EC2
-- Lanzar una instancia EC2, instalar Docker, hacer pull desde ECR y ejecutar el contenedor con las variables de RDS como arriba.
+#### Video despliegue
 
-### Configuración
-`src/main/resources/application.properties` usa variables de entorno:
-```properties
-spring.datasource.url=${SPRING_DATASOURCE_URL}
-spring.datasource.username=${MYSQL_USER}
-spring.datasource.password=${MYSQL_PASSWORD}
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
-server.port=8080
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.jpa.open-in-view=false
-```
+
 
 ### Pruebas
-- Las pruebas de unidad y de contexto están en `src/test/java/...`.
+
+#### Pruebas manuales
+
+1. Pruebas en la interfáz
+
+2. Pruebas con Postman
+
+#### Prueba automáticas
+Se incluye pruebas con JUnit y Mockito para validar el funcionamiento del framework.
+Las pruebas de unidad y de contexto están en `src/test/java/...`.
 
 Ejecutar todas las pruebas:
 ```bash
-./mvnw test
+mvn test
 ```
+#### Verificación
 
-Sugerencias para más pruebas:
-- Pruebas de la capa de servicio para `PropertyServiceImp` (casos borde de crear/actualizar/eliminar)
-- Pruebas de repositorio para `findAllByFilter`
-- Pruebas de controlador con `@WebMvcTest` para validación y manejo de errores
+Este proyecto incluye un conjunto completo de pruebas unitarias que garantizan el correcto funcionamiento de todas las operaciones CRUD del sistema de propiedades.
 
-### Capturas de Pantalla
-Agrega capturas a `docs/` y referéncialas aquí.
+##### Cobertura de Pruebas
 
-- Lista CRUD: `docs/screenshot-list.png`
-- Formulario de creación: `docs/screenshot-create.png`
-- Formulario de actualización: `docs/screenshot-update.png`
-- Confirmación/resultado de eliminación: `docs/screenshot-delete.png`
+* Operaciones Cubiertas
 
-Ejemplo de inserción:
-```markdown
-![List](docs/screenshot-list.png)
-![Create](docs/screenshot-create.png)
-![Update](docs/screenshot-update.png)
-![Delete](docs/screenshot-delete.png)
-```
+  - CREATE - Creación de propiedades
+  - READ - Obtención de propiedades por ID y paginadas con filtros
+  - UPDATE - Actualización de propiedades existentes
+  - DELETE - Eliminación de propiedades
 
-### Artefactos de Build y Ejecución
-- JAR: `target/taller5-0.0.1-SNAPSHOT.jar`
-- La imagen expone el puerto `8080` (ver `Dockerfile`).
+* Casos de Prueba
 
-### Solución de Problemas
-- Conexión a BD: asegúrate de que SG/firewalls permitan 3306 desde la app hacia la BD.
-- Si ejecutas Docker en Windows y conectas a MySQL local, usa `host.docker.internal` como host.
-- Revisa logs: `docker logs taller5` o logs de Spring Boot para errores de validación y SQL.
+  - Casos exitosos 
+  - Manejo de errores y excepciones
+  - Validaciones de entrada
+  - Consistencia de datos
 
+<img src="readmeImages/img_4.png">
 
+## Tecnologías utilizadas
+
+* [Java 21](https://openjdk.org/projects/jdk/21/) - Lenguaje de Programación
+* [Maven](https://maven.apache.org/) - Compilaciones y dependencias
+* [JUnit](https://junit.org/) - Framework de testeo
+* [Spring Data JPA](https://spring.io/projects/spring-data-jpa) - Capa de acceso a datos
+* [MySQL](https://www.mysql.com/) - Moto de base de datos 
+* [Docker](https://www.docker.com/) - Plataforma de contenedores para empaquetado y despliegue 
+* [AWS](https://aws.amazon.com/) - Plataforma cloud 
+
+## Versionamiento
+
+Actualmente se encuentra en desarrollo y se usa la versión por defecto.
+
+## Autores
+
+* **Andrea Camila Torres González**
+
+## Licencia
+
+Este proyecto no cuenta actualmente con una licencia específica.  
+Su uso está restringido únicamente a fines académicos.
