@@ -245,7 +245,7 @@ http://<alb-dns-or-service-public-ip>:8080
 
 #### Video despliegue
 
-
+[Ver video despliegue en AWS](https://pruebacorreoescuelaingeduco-my.sharepoint.com/:v:/g/personal/andrea_torres-g_mail_escuelaing_edu_co/EU1nUXpq8bxGkHLm6CUVpwgB_5HzfPYJvobcyMfPiY51LA?e=Lr3agh&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D)
 
 ### Pruebas
 
