@@ -1,4 +1,4 @@
-## Taller5_AREP – Sistema de Gestión de Propiedades
+## Taller de de modularización con virtualización e Introducción a Docker
 
 ### Introducción
 Este proyecto es una aplicación REST de gestión de propiedades construida con Spring Boot. Ofrece operaciones CRUD (crear, leer, actualizar y eliminar) y soporta filtrado y paginación por dirección, precio mínimo y tamaño mínimo. Un frontend mínimo se sirve como recursos estáticos para interactuar con el backend, mientras que la persistencia se realiza en una base de datos MySQL.
@@ -8,6 +8,8 @@ Características clave:
 - Paginación y filtros opcionales: dirección, precio y tamaño 
 - Validación de DTO con manejo de errores claro
 - Servicio contenedorizado listo para despliegue en la nube
+
+Finalmente, se desplegará la aplicación y la base de datos en instancias EC2 y usando Docker.
 
 ### Arquitectura del Sistema
 El sistema sigue una arquitectura clásica de tres capas: un frontend estático, un backend en Spring Boot y una base de datos MySQL. El frontend realiza peticiones HTTP al backend, el cual persiste datos en MySQL vía JPA.
